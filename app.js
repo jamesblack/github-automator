@@ -2,8 +2,6 @@ var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
   , http = require('http')
-  , passport = require('passport')
-  , GitHubStrategy = require('passport-github').Strategy
   , path = require('path');
 
 var app = module.exports = express();
