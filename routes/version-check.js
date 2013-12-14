@@ -39,25 +39,25 @@ module.exports = function(app) {
       .then(
         function success() {
 
-          // if (old_version !== new_version) {
-          //   superagent
-          //     .post(api + "/repos/" + owner + "/" + repo + "/releases")
-          //     .set('Accept', 'application/json')
-          //     .set('User-Agent', 'curl/7.24.0 (x86_64-apple-darwin12.0) libcurl/7.24.0 OpenSSL/0.9.8r zlib/1.2.5')
-          //     .set('Content-Type', 'application/json')
-          //     .send({
-          //       "tag_name": new_version,
-          //       "target_commitish": payload.after,
-          //       "name": new_version,
-          //       "body": payload.head_commit.message
-          //     })
-          //     .auth("jamesblack", "eCgaming1800")
-          //     .end(function(error, response) {
-          //       if (error) { console.log(error); }
-          //       if (!response.ok) { console.log(res.status); }
-          //     });
+          if (old_version !== new_version) {
+            superagent
+              .post(api + "/repos/" + owner + "/" + repo + "/releases")
+              .set('Accept', 'application/json')
+              .set('User-Agent', 'curl/7.24.0 (x86_64-apple-darwin12.0) libcurl/7.24.0 OpenSSL/0.9.8r zlib/1.2.5')
+              .set('Content-Type', 'application/json')
+              .send({
+                "tag_name": new_version,
+                "target_commitish": payload.after,
+                "name": new_version,
+                "body": payload.head_commit.message
+              })
+              .auth("jamesblack", "eCgaming1800")
+              .end(function(error, response) {
+                if (error) { console.log(error); }
+                if (!response.ok) { console.log(res.status); }
+              });
 
-          // }
+          }
           res.send({"old_version": old_version, "new_version": new_version});
         },
         function failure(error) {
