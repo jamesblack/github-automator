@@ -5,15 +5,16 @@ var Q = require('q')
 module.exports = function(app) {
   app.post("/version-check", function(req, res) {
     console.log("Version Check");
+    var payload = req.body.payload;
 
-    console.log(req.body);
-    if (req.body.ref.toLowerCase() !== "refs/heads/master") { return res.send({}); }
-    if (req.body.head_commit.modified.indexOf("package.json") === -1) { return res.send({}); }
+    console.log(payload);
+    if (payload.ref.toLowerCase() !== "refs/heads/master") { return res.send({}); }
+    if (payload.head_commit.modified.indexOf("package.json") === -1) { return res.send({}); }
 
-    var owner = req.body.repository.owner.name;
-    var repo = req.body.repository.name;
-    var new_commit_url = api + "/repos/" + owner + "/" + repo + "/git/commits/" + req.body.after;
-    var old_commit_url = api + "/repos/" + owner + "/" + repo + "/git/commits/" + req.body.before;
+    var owner = payload.repository.owner.name;
+    var repo = payload.repository.name;
+    var new_commit_url = api + "/repos/" + owner + "/" + repo + "/git/commits/" + payload.after;
+    var old_commit_url = api + "/repos/" + owner + "/" + repo + "/git/commits/" + payload.before;
 
     var old_version, new_version;
 
@@ -47,9 +48,9 @@ module.exports = function(app) {
           //     .set('Content-Type', 'application/json')
           //     .send({
           //       "tag_name": new_version,
-          //       "target_commitish": req.body.after,
+          //       "target_commitish": payload.after,
           //       "name": new_version,
-          //       "body": req.body.head_commit.message
+          //       "body": payload.head_commit.message
           //     })
           //     .auth("jamesblack", "eCgaming1800")
           //     .end(function(error, response) {
