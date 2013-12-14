@@ -5,9 +5,8 @@ var Q = require('q')
 module.exports = function(app) {
   app.post("/version-check", function(req, res) {
     console.log("Version Check");
-    var payload = req.body.payload;
+    var payload = JSON.parse(req.body.payload);
 
-    console.log(req.body);
     if (payload.ref.toLowerCase() !== "refs/heads/master") { return res.send({}); }
     if (payload.head_commit.modified.indexOf("package.json") === -1) { return res.send({}); }
 
