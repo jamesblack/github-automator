@@ -7,7 +7,7 @@ module.exports = function(app) {
     console.log("Version Check");
     var payload = req.body.payload;
 
-    console.log(payload);
+    console.log(req.body);
     if (payload.ref.toLowerCase() !== "refs/heads/master") { return res.send({}); }
     if (payload.head_commit.modified.indexOf("package.json") === -1) { return res.send({}); }
 
