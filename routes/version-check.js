@@ -30,7 +30,7 @@ var superagent = context()
 
 module.exports = function(app) {
   app.post("/version-check", function(req, res) {
-    // res.send(202);
+    res.send(202);
 
     var payload = JSON.parse(req.body.payload);
 
