@@ -63,7 +63,7 @@ module.exports = function(app) {
         function success() {
 
           if (old_version !== new_version) {
-            // create_release(new_version, payload.after, payload.head_commit.message);
+            create_release(new_version, payload.after, payload.head_commit.message);
           }
 
           return console.log({"old_version": old_version, "new_version": new_version});
