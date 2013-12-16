@@ -30,7 +30,8 @@ var superagent = context()
 
 module.exports = function(app) {
   app.post("/version-check", function(req, res) {
-    res.send(202);
+    // res.send(202);
+
     var payload = JSON.parse(req.body.payload);
 
     if (typeof payload === 'undefined') { return console.log("Invalid Payload"); }
@@ -63,19 +64,35 @@ module.exports = function(app) {
         function success() {
 
           if (old_version !== new_version) {
-            return create_release(old_version, new_version, payload.after, payload.head_commit.message);
+            return create_release();
           }
 
           return console.log({"old_version": old_version, "new_version": new_version});
         },
         function failure(error) { return console.log(error); }
       );
+
+
+      function create_release() {
+        superagent
+          .post(api + "/repos/" + owner + "/" + repo + "/releases")
+          .send({
+            "tag_name": new_version,
+            "target_commitish": payload.after,
+            "name": new_version,
+            "body": payload.head_commit.message
+          })
+          .end(function(error, response) {
+            if (error) { console.log(error); }
+            if (!response.ok) { console.log(response.status); }
+            console.log({"old_version": old_version, "new_version": new_version});
+          });
+      }
   });
 };
 
 function get_commit(url) {
   var deferred = Q.defer();
-
   superagent
     .get(url)
     .end(function(error, res) {
@@ -89,7 +106,6 @@ function get_commit(url) {
 
 function get_tree(commit) {
   var deferred = Q.defer();
-
   superagent
     .get(commit.tree.url)
     .end(function(error, res) {
@@ -130,18 +146,4 @@ function get_package_json_blob(tree) {
   return deferred.promise;
 }
 
-function create_release(old_version, new_version, commit, message) {
-  superagent
-    .post(api + "/repos/" + owner + "/" + repo + "/releases")
-    .send({
-      "tag_name": new_version,
-      "target_commitish": commit,
-      "name": new_version,
-      "body": message
-    })
-    .end(function(error, response) {
-      if (error) { console.log(error); }
-      if (!response.ok) { console.log(response.status); }
-      console.log({"old_version": old_version, "new_version": new_version});
-    });
-}
+
