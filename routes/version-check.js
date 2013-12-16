@@ -63,7 +63,7 @@ module.exports = function(app) {
         function success() {
 
           if (old_version !== new_version) {
-            create_release(new_version, payload.after, payload.head_commit.message);
+            return create_release(old_version, new_version, payload.after, payload.head_commit.message);
           }
 
           return console.log({"old_version": old_version, "new_version": new_version});
@@ -130,7 +130,7 @@ function get_package_json_blob(tree) {
   return deferred.promise;
 }
 
-function create_release(new_verion, commit, message) {
+function create_release(old_version, new_version, commit, message) {
   superagent
     .post(api + "/repos/" + owner + "/" + repo + "/releases")
     .send({
@@ -142,5 +142,6 @@ function create_release(new_verion, commit, message) {
     .end(function(error, response) {
       if (error) { console.log(error); }
       if (!response.ok) { console.log(response.status); }
+      console.log({"old_version": old_version, "new_version": new_version});
     });
 }
