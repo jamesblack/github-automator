@@ -1,6 +1,6 @@
 {
-  "name": "application-name",
-  "version": "0.0.1",
+  "name": "GitHub Automator",
+  "version": "0.0.2",
   "private": true,
   "main": "app.js",
   "scripts": {
@@ -8,13 +8,10 @@
   },
   "dependencies": {
     "express": "3.2.4",
-    "jade": "*",
     "startup": "*",
-    "passport-github": "~0.1.5",
-    "passport": "~0.1.17",
-    "superagent": "~0.15.7",
-    "superagent-queue": "0.0.3",
-    "q": "~0.9.7"
+    "q": "~0.9.7",
+    "envs": "~0.1.4",
+    "superagent-defaults": "~0.1.4"
   },
   "engines": {
     "node": "~0.10.22",
