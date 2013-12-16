@@ -13,18 +13,29 @@
 
 
 var Q = require('q')
-  , api = process.env.GITHUB_URL;
+  , context = require('superagent-defaults')
+  , envs = require('envs')
+  , api = envs("GITHUB_URL")
+  , GITHUB_LOGIN = envs("GITHUB_LOGIN")
+  , GITHUB_PASSWORD = envs("GITHUB_PASSWORD");
+
+var superagent = context()
+    .on('request', function(request){
+      request
+        .set('Accept', 'application/json')
+        .set('User-Agent', 'curl/7.24.0 (x86_64-apple-darwin12.0) libcurl/7.24.0 OpenSSL/0.9.8r zlib/1.2.5')
+        .set('Content-Type', 'application/json')
+        .auth(GITHUB_LOGIN, GITHUB_PASSWORD);
+    });
 
 module.exports = function(app) {
   app.post("/version-check", function(req, res) {
-
     res.send(202);
-
     var payload = JSON.parse(req.body.payload);
 
     if (typeof payload === 'undefined') { return console.log("Invalid Payload"); }
     if (payload.ref.toLowerCase() !== "refs/heads/master") { return; }
-    if (payload.head_commitmodified.indexOf("package.json") === -1) { return; }
+    if (payload.head_commit.modified.indexOf("package.json") === -1) { return; }
 
     var owner = payload.repository.owner.name
       , repo = payload.repository.name
@@ -52,7 +63,7 @@ module.exports = function(app) {
         function success() {
 
           if (old_version !== new_version) {
-            create_release(new_version, payload.after, payload.head_commit.message);
+            // create_release(new_version, payload.after, payload.head_commit.message);
           }
 
           return console.log({"old_version": old_version, "new_version": new_version});
